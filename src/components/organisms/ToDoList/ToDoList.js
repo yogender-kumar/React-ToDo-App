@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { Grid, Typography, Divider, List, ListItemText, Button, ListItemSecondaryAction } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { Grid, Typography, Divider, List, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+
+import AddTask from "../AddTask/AddTask";
 
 import TaskList from "../../molecules/TaskList/TaskList";
 
@@ -41,22 +42,25 @@ class ToDoList extends React.Component {
         });
     };
 
+    onTaskDelete = (taskId) => {
+        if (window.confirm('Are you sure you wish to delete this item?')) {
+            this.props.taskDelete(taskId);
+        }
+    }
+
     render = () => {
-        const { classes, staticData: page } = this.props;
+        const { classes, staticData: templateData } = this.props;
         return (
             <Grid container justify="center" alignItems="flex-start" direction="column">
                 <div className={classes.wrapper} >
                     <List>
-                        <ListItemText primary={<Typography component="h1" variant="title" className={classes.title}>{page.heading}</Typography>} />
+                        <ListItemText primary={<Typography component="h1" variant="title" className={classes.title}>{templateData.heading}</Typography>} />
                         <ListItemSecondaryAction>
-                            <Button color="secondary" aria-label="Create Task">
-                            <Add /> Add Task
-                            </Button>
+                            <AddTask />
                         </ListItemSecondaryAction>
                     </List>
-
                     <Divider />
-                    <TaskList taskList={this.props.toDoList} onClickOpen={this.handleClickOpen} />
+                    <TaskList taskList={this.props.toDoList} onStatusChange={this.handleClickOpen} onTaskDelete={this.onTaskDelete} />
                     {
                         this.state.components.length
                             ? this.state.components.map(Component => Component)
@@ -73,7 +77,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
     getToDoList: () => dispatch({ type: 'GET_TODO_LIST' }),
-    updateTaskStatus: (taskId, newStatus) => dispatch({ type: 'UPDATE_TASK_STATUS', taskId, newStatus })
+    updateTaskStatus: (taskId, newStatus) => dispatch({ type: 'UPDATE_TASK_STATUS', taskId, newStatus }),
+    taskDelete: (taskId) => dispatch({ type: 'DELETE_TASK_BY_ID', taskId })
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ToDoList));

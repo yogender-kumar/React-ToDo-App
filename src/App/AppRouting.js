@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import Loadable from 'react-loadable';
 
-const Loading = () => <div>Loading...</div>;
+import Loading from '../components/atoms/Loading/Loading';
 
 const Home = Loadable({
     loader: () => import('../components/templates/Home/Home'),

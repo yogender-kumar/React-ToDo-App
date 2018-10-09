@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Edit } from '@material-ui/icons';
+import { Edit, Delete } from '@material-ui/icons';
 
 import {
   List,
@@ -13,6 +13,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 
 import WithTheme from '../../../WithTheme';
+import NoData from '../../atoms/NoData/NoData';
 
 // import Todo from "../atoms/Todo/Todo";
 
@@ -31,28 +32,44 @@ const styles = theme => ({
 });
 
 const TaskList = (props) => {
-  const { classes, taskList, onClickOpen } = props;
+  const { classes, taskList, onStatusChange, onTaskDelete } = props;
   return <div className={classes.root}>
 
-      <List>
-          {taskList.map((task, index) => (
-            <ListItem
-              key={task.id}
-              role={undefined}
-              dense
-              button
-              className={classes.listItem}
-              divider
-            >
-              <ListItemText primary={`${task.label}`} />
-              <ListItemSecondaryAction>
-                  <Button onClick={()=>onClickOpen(index)} color="primary" size="small" mini>
-                  <Edit /> {task.status}
+    <List>
+      {
+        taskList && taskList.length ? taskList.map((task, index) => (
+          <ListItem
+            key={task.id}
+            role={undefined}
+            dense
+            button
+            className={classes.listItem}
+            divider
+          >
+            <ListItemText primary={`${task.label} - ${task.isDeleted}`} />
+            <ListItemSecondaryAction>
+              {
+                onTaskDelete
+                  ?
+                  <Button onClick={() => onTaskDelete(task.id)} color="secondary" size="small" mini aria-label="Delete">
+                    <Delete />
                   </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+                  : null
+              }
+              {
+                onStatusChange
+                  ?
+                  <Button onClick={() => onStatusChange(index)} color="primary" size="small" mini>
+                    <Edit /> {task.status}
+                  </Button>
+                  : null
+              }
+            </ListItemSecondaryAction>
+          </ListItem>
+        ))
+          : <NoData />
+      }
+    </List>
     {/* ))} */}
   </div>
 };

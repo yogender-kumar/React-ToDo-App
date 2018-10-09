@@ -37,7 +37,7 @@ class DialogSelect extends React.Component {
   };
 
   render() {
-    const { classes, status, index } = this.props;
+    const { classes, status } = this.props;
 
     return (
       <div>
